@@ -98,7 +98,22 @@ def updatePaddle1(action, paddle1YPos):
         paddle1YPos = WINDOW_HEIGHT - PADDLE_HEIGHT
     return paddle1YPos
 
-def updatePaddle2:
+def updatePaddle2(paddle2YPos, ballYPos):
+    # move down if ball is in upper half
+    if(paddle2YPos + PADDLE_HEIGHT/2 < ballYPos + BALL_HEIGHT/2):
+        paddle2YPos = paddle2YPos + PADDLE_SPEED
+
+    #move up if ball is in lower half
+    if(paddle2YPos + PADDLE_HEIGHT/2 > ballYPos + BALL_HEIGHT/2):
+        paddle2YPos = paddle2YPos - PADDLE_SPEED
+
+    #don't let it hit top
+    if(paddle2YPos < 0):
+        paddle2YPos = 0
+    #dont let it hit bottom
+    if(paddle2YPos > WINDOW_HEIGHT - PADDLE_HEIGHT):
+        paddle2YPos = WINDOW_HEIGHT - PADDLE_HEIGHT
+    return paddle2YPos
 
 
 class PongGame:
@@ -140,14 +155,28 @@ class PongGame:
 
     def getNextFrame(self,action):
         pygame.event.pump() # call event queue
+        score = 0
         screen.fill(BLACK)
+        #update our paddle
         self.paddle1YPos = updatePaddle1(action, self.paddle1YPos)
         drawPaddle1(self.paddle1YPos)
+        #update AI paddle
         self.paddle2YPos = updatePaddle2(self.paddle2YPos, self.ballYPos)
+        drawPaddle2(self.paddle2YPos)
+        #update our vars by updating ball position
+        [score, self.paddle1YPos, self.paddle2YPos, self.ballXPos, self.ballYPos, 
+                self.ballXDirection, self.ballYDirection] = updateBall(self.paddle1YPos, self.paddle2YPos,
+                        self.ballXPos, self.ballYPos, self.ballXDirection, self.ballYDirection)
+        #draw the ball        
         drawBall(self.ballXPos, self.ballYPos)
+        #get the surface data
         image_data = pygame.surfarray.array3d(pygame.display.get_surface)
+        #update the window
         pygame.display.flip()
+        #record the total score
         self.tally = self.tally + score
+        print("Tally is " + str(self.tally))
+        #return score and the surface data
         return [score, image_data]
 
 
