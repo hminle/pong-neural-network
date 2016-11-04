@@ -25,8 +25,8 @@ BATCH = 100
 # make 5 layer CNN, pixel data to to CNN
 def createGraph():
     #first convolutional layer, bias vector
-    W_conv1 = tf.Varibale(tf.zeros([8,8,4,32]))
-    b_conv1 = tf.Variable(tf.zeros([32])
+    W_conv1 = tf.Variable(tf.zeros([8,8,4,32]))
+    b_conv1 = tf.Variable(tf.zeros([32]))
 
     #second layer
     W_conv2 = tf.Variable(tf.zeros([4,4,32,64]))
@@ -37,7 +37,7 @@ def createGraph():
     b_conv3 = tf.Variable(tf.zeros([64]))
 
     #fourth 
-    W_fc4 = tf.Variable(tf.zeros([784, ACTIONS]))
+    W_fc4 = tf.Variable(tf.zeros([3136, 784]))
     b_fc4 = tf.Variable(tf.zeros([784]))
 
     #LAST layer
@@ -104,7 +104,7 @@ def trainGraph(inp, out, sess):
         #argmax function
         argmax_t = np.zeros([ACTIONS])
 
-        if(randon.random() <= epsilon):
+        if(random.random() <= epsilon):
             maxIndex = random.randrange(ACTIONS)
         else:
             maxIndex = np.argmax(out_t)

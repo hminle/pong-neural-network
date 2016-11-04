@@ -10,7 +10,7 @@ WINDOW_HEIGHT = 400
 
 # size of our paddle
 PADDLE_WIDTH = 10
-PADDLE_HEIGHT = 10
+PADDLE_HEIGHT = 30
 
 # size of our ball
 BALL_WIDTH = 10
@@ -28,13 +28,13 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
 # initialize our screen
-screen = pygame.display.set_mode(WINDOW_WIDTH, WINDOW_HEIGHT)
+screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
 def drawBall(ballXpos, ballYpos):
     ball = pygame.Rect(ballXpos, ballYpos, BALL_WIDTH, BALL_HEIGHT)
     pygame.draw.rect(screen, WHITE, ball)
 
-def drawPaddle1(paddle1Ypos):
+def drawPaddle1(paddle1YPos):
     paddle1 = pygame.Rect(PADDLE_BUFFER, paddle1YPos, PADDLE_WIDTH, PADDLE_HEIGHT)
     pygame.draw.rect(screen, WHITE, paddle1)
 
@@ -53,7 +53,7 @@ def updateBall(paddle1YPos, paddle2YPos, ballXpos, ballYpos, ballXDirection, bal
     # hits the left side
     #then switch direction
     if(ballXPos <= PADDLE_BUFFER + PADDLE_WIDTH 
-            and ballYPos + BALL_HEIGHT >= paddle1Ypos 
+            and ballYPos + BALL_HEIGHT >= paddle1YPos 
             and ballYPos - BALL_HEIGHT <= paddle1YPos + PADDLE_HEIGHT):
         ballXDirection = 1
     elif(ballXPos <= 0):
@@ -76,7 +76,7 @@ def updateBall(paddle1YPos, paddle2YPos, ballXpos, ballYpos, ballXDirection, bal
         ballYPos = 0
         ballYDirection = 1
     elif(ballYPos >= WINDOW_HEIGHT - BALL_HEIGHT):
-        ballYPos = WINDOWHEIGHT - BALL_HEIGHT
+        ballYPos = WINDOW_HEIGHT - BALL_HEIGHT
         ballYDirection = -1
     return [score, paddle1YPos, paddle2YPos, ballXPos, ballYPos, ballXDirection, ballYDirection]
 
@@ -119,7 +119,7 @@ def updatePaddle2(paddle2YPos, ballYPos):
 class PongGame:
     def __init__(self):
         #random number for initial direction of ball
-        num = random.randInt(0,9)
+        num = random.randint(0,9)
         #keep score
         self.tally = 0
         #initialize position of our paddle
@@ -135,6 +135,19 @@ class PongGame:
         if(0<num<3):
             self.ballXDirection = 1
             self.ballYDirection = 1
+        if(3 <= num < 5):
+            self.balllXDirection = -1
+            self.ballYDirection = 1
+        if(5<= num <8):
+            self.ballXDirection = 1
+            self.ballYDirection = -1
+        if(8 <= num < 10):
+            self.ballXDirection = -1
+            self.ballYDirection = -1
+        #new random number
+        num = random.randint(0,9)
+        #where it will start, y part
+        self.ballYPos = num*(WINDOW_HEIGHT - BALL_HEIGHT)/9
 
     def getPresentFrame(self):
         #for each frame call the event queue
@@ -147,7 +160,7 @@ class PongGame:
         #draw ball
         drawBall(self.ballXPos, self.ballYPos)
         # get pixels 
-        image_data = pygame.surfarray.array3d(pygame.display.get_surface)
+        image_data = pygame.surfarray.array3d(pygame.display.get_surface())
         #update the window
         pygame.display.flip()
         #return screen data
@@ -170,7 +183,7 @@ class PongGame:
         #draw the ball        
         drawBall(self.ballXPos, self.ballYPos)
         #get the surface data
-        image_data = pygame.surfarray.array3d(pygame.display.get_surface)
+        image_data = pygame.surfarray.array3d(pygame.display.get_surface())
         #update the window
         pygame.display.flip()
         #record the total score
